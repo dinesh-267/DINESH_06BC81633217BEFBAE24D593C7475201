@@ -1,0 +1,65 @@
+
+#include <iostream>
+using namespace std;
+
+// Node structure
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = right = nullptr;
+    }
+};
+
+// Manually create the simple tree
+Node* createSimpleTree() {
+    Node* root = new Node(5);
+    root->left = new Node(3);
+    root->left->left = new Node(1);
+
+    root->right = new Node(4);
+    root->right->left = new Node(2);
+    root->right->right = new Node(0);
+
+    return root;
+}
+
+// Reverse the tree recursively
+void reverseTree(Node* root) {
+    if (root == nullptr)
+        return;
+
+    Node* temp = root->left;
+    root->left = root->right;
+    root->right = temp;
+
+    reverseTree(root->left);
+    reverseTree(root->right);
+}
+
+// Inorder traversal (left-root-right)
+void inorderTraversal(Node* root) {
+    if (root == nullptr)
+        return;
+
+    inorderTraversal(root->left);
+    cout << root->data << " ";
+    inorderTraversal(root->right);
+}
+
+int main() {
+    Node* root = createSimpleTree();
+
+    cout << "Inorder before reversal: ";
+    inorderTraversal(root);
+
+    reverseTree(root);
+
+    cout << "\nInorder after reversal: ";
+    inorderTraversal(root);
+
+    return 0;
+}
