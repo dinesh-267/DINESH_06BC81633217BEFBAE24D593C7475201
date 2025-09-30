@@ -1,0 +1,57 @@
+
+import matplotlib.pyplot as plt
+import numpy as np
+x = np.linspace(1, 10, 100)
+y = x**2
+z = np.exp(x)
+plt.figure(figsize=(12, 8))
+plt.subplot(2, 2, 1)
+plt.plot(x, y, label="y = x^2")
+plt. title("Linear Scale")
+plt.xlabel("X-axis")
+plt.ylabel("Y-axis")
+plt.legend()
+plt.grid(True)
+plt.subplot(2, 2, 2)
+plt.plot(x, z, 'r', label="y = e^x")
+plt.yscale("log")
+plt. title("Logarithmic Scale (Y-axis)")
+plt.xlabel("X-axis")
+plt.ylabel("Y-axis (log)")
+plt.legend()
+plt.grid(True)
+plt.subplot(2, 2, 3)
+plt.scatter(x, y, c='g', label="y = x^2")
+plt.xscale("log")
+plt.title("Scatter Plot with Log Scale (X-axis)")
+plt.xlabel("X-axis (log)")
+plt.ylabel("Y-axis")
+plt.legend()
+plt.grid(True)
+plt.subplot(2, 2, 4)
+plt.plot(x, np.sqrt(x), 'm', label="y = sqrt(x)")
+plt.title("Custom Function Scaling")
+plt.xlabel("X-axis")
+plt.ylabel("Y-axis")
+plt.legend()
+plt.grid(True)
+Plt.tight_layout()
+plt.show()
+
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+import pandas as pd
+np.random.seed(10)
+x = np.random.randint(10, 50, 30)
+y = 2 * x + np.random.randint(1, 20, 30)
+data = pd.DataFrame({"X": x, "Y": y})
+plt.figure(figsize=(7,5))
+sns.scatterplot(x="X",y="Y",data=data,color="blue",s=70, marker="o")
+plt.title("Scatterplot between X and Y")
+plt.xlabel("X Values")
+plt.ylabel("Y Values")
+plt.grid(True)
+plt.show()
