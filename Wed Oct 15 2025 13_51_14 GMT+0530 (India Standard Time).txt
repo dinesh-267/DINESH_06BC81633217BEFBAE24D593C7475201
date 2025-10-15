@@ -1,0 +1,55 @@
+
+class InvalidAgeException extends Exception {
+ public InvalidAgeException(String message) {
+ super(message);
+ }
+}
+public class ExceptionHandlingDemo {
+ // Method that declares it might throw a custom exception
+ public static void validateAge(int age) throws InvalidAgeException {
+ if (age < 0 || age > 120) {
+ // Explicitly throw a custom exception
+ throw new InvalidAgeException("Age must be between 0 and 120.");
+ } else {
+ System.out.println("Age is valid: " + age);
+ }
+ }
+ // Method that might throw a built-in exception
+ public static void divideNumbers(int numerator, int denominator) {
+ try {
+ int result = numerator / denominator; // Potential ArithmeticException
+ System.out.println("Division result: " + result);
+ } catch (ArithmeticException e) {
+ // Catching a built-in exception
+ System.err.println("Error: Cannot divide by zero. " + e.getMessage());
+ } finally {
+ System.out.println("Division operation attempted.");
+ }
+ }
+ public static void main(String[] args) {
+ // Demonstrate built-in exception handling
+ System.out.println("--- Demonstrating Built-in Exception Handling ---");
+ divideNumbers(10, 2);
+ divideNumbers(5, 0); // This will cause an ArithmeticException
+ System.out.println("\n--- Demonstrating User-defined Exception Handling ---");
+ try {
+ validateAge(25); // Valid age
+ validateAge(-5); // This will cause an InvalidAgeException
+ } catch (InvalidAgeException e) {
+ // Catching the custom exception
+ System.err.println("Error: " + e.getMessage());
+ } finally {
+ System.out.println("Age validation process completed.");
+ }
+ System.out.println("\n--- Demonstrating another Built-in Exception ---");
+ try {
+ int[] numbers = {1, 2, 3};
+ System.out.println("Accessing element at index 5: " + numbers[5]); // Potential 
+ArrayIndexOutOfBoundsException
+ } catch (ArrayIndexOutOfBoundsException e) {
+ System.err.println("Error: Array index out of bounds. " + e.getMessage());
+ } finally {
+ System.out.println("Array access attempt completed.");
+ }
+ }
+}
