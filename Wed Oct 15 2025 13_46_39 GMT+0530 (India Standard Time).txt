@@ -1,0 +1,28 @@
+
+Built-in Exception Handling
+
+Java provides many built-in exceptions to handle common runtime errors automatically. These are already defined in the Java library. Examples include:
+
+User-defined Exception Handling
+
+Sometimes, the built-in exceptions are not enough. In such cases, programmers can create user-defined exceptions to handle specific problems in their application.
+
+try Block
+
+The try block is used to wrap the code that might cause an exception. It helps to test a section of code for errors. If any error happens, the program immediately jumps to the catch block.
+
+catch Block
+
+The catch block is used to handle the exception that occurs inside the try block. It allows the program to respond to the error instead of crashing. You can print an error message, take corrective action, or log the error.
+
+finally Block
+
+The finally block is used to execute code that must run whether an exception occurs or not. It is commonly used to close files, release memory, or disconnect from a database.
+
+throw Keyword
+
+The throw keyword is used to manually throw an exception in your program. You can use it to signal that something unexpected happened.
+
+throws Keyword
+
+The throws keyword is used in a method declaration to tell that the method might throw some checked exceptions. The calling method must handle or declare these exceptions.
