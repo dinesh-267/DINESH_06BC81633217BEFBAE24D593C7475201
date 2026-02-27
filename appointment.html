@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Clinic Appointment Booking System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f4f6f9;
+    }
+    .card {
+      border-radius: 12px;
+    }
+    .badge-confirmed {
+      background-color: #28a745;
+    }
+    .badge-pending {
+      background-color: #ffc107;
+      color: black;
+    }
+    .badge-cancelled {
+      background-color: #dc3545;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand" href="#">Clinic Appointment System</a>
+  </div>
+</nav>
+
+<!-- Booking Form -->
+<section class="container my-5">
+  <div class="card shadow p-4">
+    <h3 class="mb-4">Book an Appointment</h3>
+    <form id="appointmentForm">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Patient Name</label>
+          <input type="text" class="form-control" id="name" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Select Doctor</label>
+          <select class="form-select" id="doctor" required>
+            <option value="">Choose...</option>
+            <option>Dr. Smith - Cardiologist</option>
+            <option>Dr. John - Dentist</option>
+            <option>Dr. Priya - Dermatologist</option>
+            <option>Dr. Kumar - General Physician</option>
+          </select>
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-control" id="date" required>
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Time</label>
+          <input type="time" class="form-control" id="time" required>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Schedule Appointment</button>
+    </form>
+  </div>
+</section>
+
+<!-- Appointment List -->
+<section class="container my-5">
+  <h3 class="mb-4">Manage Appointments</h3>
+  <div class="row" id="appointmentList"></div>
+</section>
+
+<script>
+let appointments = JSON.parse(localStorage.getItem("appointments")) || [];
+const form = document.getElementById("appointmentForm");
+const list = document.getElementById("appointmentList");
+
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const appointment = {
+    id: Date.now(),
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    doctor: document.getElementById("doctor").value,
+    date: document.getElementById("date").value,
+    time: document.getElementById("time").value,
+    status: "Pending"
+  };
+
+  appointments.push(appointment);
+  localStorage.setItem("appointments", JSON.stringify(appointments));
+  form.reset();
+  displayAppointments();
+});
+
+function displayAppointments() {
+  list.innerHTML = "";
+
+  appointments.forEach(app => {
+    let badgeClass = "badge-pending";
+    if (app.status === "Confirmed") badgeClass = "badge-confirmed";
+    if (app.status === "Cancelled") badgeClass = "badge-cancelled";
+
+    list.innerHTML += `
+      <div class="col-md-6 mb-4">
+        <div class="card shadow p-3">
+          <h5>${app.name}</h5>
+          <p><strong>Email:</strong> ${app.email}</p>
+          <p><strong>Doctor:</strong> ${app.doctor}</p>
+          <p><strong>Date:</strong> ${app.date}</p>
+          <p><strong>Time:</strong> ${app.time}</p>
+          <span class="badge ${badgeClass}">${app.status}</span>
+          <div class="mt-3">
+            <button class="btn btn-success btn-sm me-2"
+              onclick="updateStatus(${app.id}, 'Confirmed')">
+              Confirm
+            </button>
+            <button class="btn btn-danger btn-sm"
+              onclick="updateStatus(${app.id}, 'Cancelled')">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function updateStatus(id, status) {
+  appointments = appointments.map(app => {
+    if (app.id === id) {
+      app.status = status;
+    }
+    return app;
+  });
+
+  localStorage.setItem("appointments", JSON.stringify(appointments));
+  displayAppointments();
+}
+
+displayAppointments();
+</script>
+
+</body>
+</html>
