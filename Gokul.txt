@@ -1,0 +1,102 @@
+
+<body>
+<header>
+<h2>Personal Finance Tracker</h2>
+</header>
+
+<div class="container">
+<!-- Dashboard -->
+<div class="dashboard">
+<div class="card income">Income: ₹<span id="income">0</span></div>
+<div class="card expense">Expenses: ₹<span id="expense">0</span></div>
+<div class="card balance">Balance: ₹<span id="balance">0</span></div>
+<div class="card savings">Savings: ₹<span id="savings">0</span></div>
+</div>
+
+<!-- Form -->
+<form onsubmit="addTransaction(event)">
+<select id="type">
+<option value="income">Income</option>
+<option value="expense">Expense</option>
+</select>
+<input type="number" id="amount" required placeholder="Amount">
+<input type="month" id="month" required>
+<button type="submit">Add</button>
+<button type="button" onclick="exportCSV()">Export</button>
+</form>
+
+<!-- Charts -->
+<div class="chart-container">
+<canvas id="barChart" width="400" height="300"></canvas>
+<canvas id="pieChart" width="400" height="300"></canvas>
+</div>
+
+<!-- Table -->
+<table>
+<thead><tr><th>Type</th><th>Amount</th><th>Month</th></tr></thead>
+<tbody id="tableBody"></tbody>
+</table>
+</div>
+
+<script>
+let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+let totalIncome = 0, totalExpense = 0;
+
+const barChart = new Chart(document.getElementById("barChart"), {
+type:'bar',
+data:{labels:["Income","Expense","Balance"],
+datasets:[{label:"Finance Summary", data:[0,0,0]}]}
+});
+
+const pieChart = new Chart(document.getElementById("pieChart"), {
+type:'pie',
+data:{labels:["Income","Expense"],
+datasets:[{data:[0,0]}]}
+});
+
+function addTransaction(e) {
+e.preventDefault();
+let type=document.getElementById("type").value;
+let amount=parseFloat(document.getElementById("amount").value);
+let month=document.getElementById("month").value;
+transactions.push({type,amount,month});
+localStorage.setItem("transactions",JSON.stringify(transactions));
+alert(type=="income"?"Income Added!":"Expense Added!");
+updateAll();
+}
+
+function updateAll() {
+totalIncome=0; totalExpense=0;
+let table="";
+transactions.forEach(t=>{
+if(t.type=="income") totalIncome+=t.amount;
+else totalExpense+=t.amount;
+table+=`<tr><td>${t.type}</td><td>${t.amount}</td><td>${t.month}</td></tr>`;
+});
+document.getElementById("tableBody").innerHTML=table;
+let balance=totalIncome-totalExpense;
+document.getElementById("income").innerText=totalIncome;
+document.getElementById("expense").innerText=totalExpense;
+document.getElementById("balance").innerText=balance;
+document.getElementById("savings").innerText=balance;
+updateCharts(balance);
+}
+
+function updateCharts(balance) {
+barChart.data.datasets[0].data=[totalIncome,totalExpense,balance];
+pieChart.data.datasets[0].data=[totalIncome,totalExpense];
+barChart.update(); pieChart.update();
+}
+
+function exportCSV() {
+let csv="Type,Amount,Month\n";
+transactions.forEach(t=>csv+=`${t.type},${t.amount},${t.month}\n`);
+let a=document.createElement("a");
+a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+a.download="finance_data.csv";
+a.click();
+}
+
+updateAll();
+</script>
+</body>
