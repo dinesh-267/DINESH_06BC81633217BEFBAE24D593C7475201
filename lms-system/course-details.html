@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Details | SmartLMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .course-header-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .course-header-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 20s linear infinite;
+        }
+        
+        @keyframes moveBackground {
+            from {
+                transform: translate(0, 0);
+            }
+            to {
+                transform: translate(50px, 50px);
+            }
+        }
+        
+        .course-info-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: -60px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+        
+        .quiz-section {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+        
+        .quiz-question-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .quiz-question-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .quiz-option {
+            margin: 12px 0;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid #e9ecef;
+        }
+        
+        .quiz-option:hover {
+            background: #e9ecef;
+            transform: translateX(8px);
+        }
+        
+        .quiz-option.selected {
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            border-color: #667eea;
+        }
+        
+        .quiz-option input {
+            margin-right: 12px;
+            cursor: pointer;
+        }
+        
+        .score-card-result {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 30px;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+        
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: white;
+        }
+        
+        .score-number {
+            position: relative;
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            z-index: 1;
+        }
+        
+        .performance-message {
+            font-size: 1.2rem;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+        
+        .attempts-history {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .attempt-item {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.2s;
+        }
+        
+        .attempt-item:hover {
+            background: #f8f9fa;
+            transform: translateX(5px);
+        }
+        
+        .badge-score {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .badge-excellent {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-good {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .badge-average {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-needs-work {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+        
+        .btn-submit-quiz {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+        
+        .btn-submit-quiz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+        
+        .btn-reset-quiz {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+        
+        .btn-reset-quiz:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .share-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .share-buttons .btn {
+            margin: 0 5px;
+            border-radius: 50px;
+        }
+        
+        .progress-custom-lg {
+            height: 10px;
+            border-radius: 10px;
+        }
+        
+        .info-icon {
+            color: #667eea;
+            margin-right: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .course-info-card {
+                margin-top: -30px;
+                padding: 20px;
+            }
+            
+            .quiz-question-card {
+                padding: 15px;
+            }
+            
+            .score-circle {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .score-number {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="bi bi-mortarboard-fill me-2"></i>SmartLMS
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="bi bi-house"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="create-course.html">
+                            <i class="bi bi-plus-circle"></i> Create Course
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="my-courses.html">
+                            <i class="bi bi-book"></i> My Courses
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="courseContent">
+        <!-- Dynamic content will be loaded here -->
+        <div class="loading-spinner">
+            <div class="text-center">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-muted">Loading course details...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Get course ID from URL
+        function getCourseIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return parseInt(urlParams.get('id'));
+        }
+
+        // Load and display course
+        function loadCourseDetails() {
+            const courseId = getCourseIdFromUrl();
+            if (!courseId) {
+                window.location.href = 'my-courses.html';
+                return;
+            }
+
+            const courses = JSON.parse(localStorage.getItem('lms_courses')) || [];
+            const course = courses.find(c => c.id === courseId);
+            
+            if (!course) {
+                document.getElementById('courseContent').innerHTML = `
+                    <div class="container py-5 text-center">
+                        <i class="bi bi-exclamation-triangle fs-1 text-warning"></i>
+                        <h3 class="mt-3">Course Not Found</h3>
+                        <p class="text-muted">The course you're looking for doesn't exist or has been deleted.</p>
+                        <a href="my-courses.html" class="btn btn-primary mt-3">Back to My Courses</a>
+                    </div>
+                `;
+                return;
+            }
+
+            renderCourseDetails(course);
+        }
+
+        // Render course details
+        function renderCourseDetails(course) {
+            const scores = JSON.parse(localStorage.getItem(`course_${course.id}_scores`)) || [];
+            const bestScore = scores.length > 0 ? Math.max(...scores.map(s => s.percentage)) : 0;
+            const averageScore = scores.length > 0 ? 
+                scores.reduce((sum, s) => sum + s.percentage, 0) / scores.length : 0;
+            
+            const html = `
+                <!-- Course Header -->
+                <div class="course-header-section">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <h1 class="display-4 fw-bold mb-3">${escapeHtml(course.title)}</h1>
+                                <div class="d-flex flex-wrap gap-3 mb-3">
+                                    <span class="badge bg-light text-dark px-3 py-2">
+                                        <i class="bi bi-tag"></i> ${escapeHtml(course.category)}
+                                    </span>
+                                    <span class="badge bg-light text-dark px-3 py-2">
+                                        <i class="bi bi-bar-chart"></i> ${escapeHtml(course.difficulty)}
+                                    </span>
+                                    <span class="badge bg-light text-dark px-3 py-2">
+                                        <i class="bi bi-question-circle"></i> ${course.quiz.length} Questions
+                                    </span>
+                                    <span class="badge bg-light text-dark px-3 py-2">
+                                        <i class="bi bi-pencil-square"></i> ${scores.length} Attempts
+                                    </span>
+                                </div>
+                                <p class="lead mb-0">${escapeHtml(course.description)}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container pb-5">
+                    <!-- Course Info Card -->
+                    <div class="course-info-card">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="mb-3">
+                                    <i class="bi bi-info-circle-fill text-primary"></i> 
+                                    Course Information
+                                </h4>
+                                <p><strong>Created:</strong> ${new Date(course.createdAt).toLocaleDateString()}</p>
+                                <p><strong>Total Questions:</strong> ${course.quiz.length}</p>
+                                <p><strong>Difficulty Level:</strong> ${escapeHtml(course.difficulty)}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h4 class="mb-3">
+                                    <i class="bi bi-graph-up"></i> 
+                                    Your Performance
+                                </h4>
+                                ${scores.length > 0 ? `
+                                    <p><strong>Best Score:</strong> ${bestScore.toFixed(1)}%</p>
+                                    <p><strong>Average Score:</strong> ${averageScore.toFixed(1)}%</p>
+                                    <p><strong>Total Attempts:</strong> ${scores.length}</p>
+                                    <div class="progress-custom progress-custom-lg mt-2">
+                                        <div class="progress-bar" style="width: ${bestScore}%"></div>
+                                    </div>
+                                ` : `
+                                    <p class="text-muted">No attempts yet. Take the quiz to see your performance!</p>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Section -->
+                    <div class="quiz-section">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="mb-0">
+                                <i class="bi bi-question-square-fill text-primary"></i> 
+                                Course Quiz
+                            </h2>
+                            <button id="resetQuizBtn" class="btn-reset-quiz">
+                                <i class="bi bi-arrow-repeat"></i> Reset Answers
+                            </button>
+                        </div>
+                        
+                        <div id="quizContainer"></div>
+                        
+                        <div class="text-center mt-4">
+                            <button id="submitQuizBtn" class="btn-submit-quiz">
+                                <i class="bi bi-check2-circle"></i> Submit Quiz
+                            </button>
+                        </div>
+                        
+                        <div id="quizResult"></div>
+                    </div>
+
+                    <!-- Attempts History -->
+                    ${scores.length > 0 ? `
+                        <div class="attempts-history">
+                            <h4 class="mb-3">
+                                <i class="bi bi-clock-history text-primary"></i> 
+                                Your Quiz History
+                            </h4>
+                            <div id="attemptsList"></div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Share Section -->
+                    <div class="share-section">
+                        <h5><i class="bi bi-share-fill text-primary"></i> Share This Course</h5>
+                        <div class="share-buttons mt-3">
+                            <button class="btn btn-outline-primary" onclick="copyCourseLink()">
+                                <i class="bi bi-link"></i> Copy Link
+                            </button>
+                            <button class="btn btn-outline-success" onclick="shareOnWhatsApp()">
+                                <i class="bi bi-whatsapp"></i> WhatsApp
+                            </button>
+                            <button class="btn btn-outline-info" onclick="shareOnTwitter()">
+                                <i class="bi bi-twitter-x"></i> Twitter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('courseContent').innerHTML = html;
+            
+            // Render quiz questions
+            renderQuizQuestions(course);
+            
+            // Add event listeners
+            document.getElementById('submitQuizBtn').addEventListener('click', () => submitQuiz(course));
+            document.getElementById('resetQuizBtn').addEventListener('click', () => resetQuiz(course));
+            
+            // Render attempts history if exists
+            if (scores.length > 0) {
+                renderAttemptsHistory(scores);
+            }
+        }
+        
+        // Render quiz questions
+        function renderQuizQuestions(course) {
+            const quizContainer = document.getElementById('quizContainer');
+            let selectedAnswers = JSON.parse(sessionStorage.getItem(`quiz_${course.id}_answers`)) || {};
+            
+            quizContainer.innerHTML = course.quiz.map((question, idx) => `
+                <div class="quiz-question-card" data-question="${idx}">
+                    <div class="mb-3">
+                        <span class="question-number">${idx + 1}</span>
+                        <strong class="fs-5">${escapeHtml(question.question)}</strong>
+                    </div>
+                    <div class="ms-4">
+                        ${question.options.map((option, optIdx) => `
+                            <div class="quiz-option ${selectedAnswers[idx] === optIdx ? 'selected' : ''}" 
+                                 onclick="selectAnswer(${course.id}, ${idx}, ${optIdx})">
+                                <input type="radio" 
+                                       name="q${idx}" 
+                                       value="${optIdx}" 
+                                       id="q${idx}_${optIdx}"
+                                       ${selectedAnswers[idx] === optIdx ? 'checked' : ''}>
+                                <label for="q${idx}_${optIdx}" class="mb-0">${escapeHtml(option)}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Select answer
+        window.selectAnswer = function(courseId, questionIndex, answerIndex) {
+            let selectedAnswers = JSON.parse(sessionStorage.getItem(`quiz_${courseId}_answers`)) || {};
+            selectedAnswers[questionIndex] = answerIndex;
+            sessionStorage.setItem(`quiz_${courseId}_answers`, JSON.stringify(selectedAnswers));
+            
+            // Update UI
+            const questionCard = document.querySelector(`.quiz-question-card[data-question="${questionIndex}"]`);
+            const options = questionCard.querySelectorAll('.quiz-option');
+            options.forEach((opt, idx) => {
+                if (idx === answerIndex) {
+                    opt.classList.add('selected');
+                    const radio = opt.querySelector('input');
+                    if (radio) radio.checked = true;
+                } else {
+                    opt.classList.remove('selected');
+                    const radio = opt.querySelector('input');
+                    if (radio) radio.checked = false;
+                }
+            });
+        };
+        
+        // Reset quiz
+        function resetQuiz(course) {
+            if (confirm('Reset all your answers? This will clear your current progress.')) {
+                sessionStorage.removeItem(`quiz_${course.id}_answers`);
+                renderQuizQuestions(course);
+                
+                // Scroll to top of quiz
+                document.querySelector('.quiz-section').scrollIntoView({ behavior: 'smooth' });
+                
+                // Show temporary notification
+                showNotification('Answers reset! You can start fresh.', 'info');
+            }
+        }
+        
+        // Submit quiz
+        function submitQuiz(course) {
+            const selectedAnswers = JSON.parse(sessionStorage.getItem(`quiz_${course.id}_answers`)) || {};
+            let score = 0;
+            const results = [];
+            
+            // Calculate score
+            course.quiz.forEach((question, idx) => {
+                const isCorrect = selectedAnswers[idx] === question.answer;
+                if (isCorrect) score++;
+                results.push({
+                    question: question.question,
+                    selected: selectedAnswers[idx],
+                    correct: question.answer,
+                    isCorrect: isCorrect,
+                    correctAnswer: question.options[question.answer]
+                });
+            });
+            
+            const percentage = (score / course.quiz.length) * 100;
+            
+            // Save score to localStorage
+            const scores = JSON.parse(localStorage.getItem(`course_${course.id}_scores`)) || [];
+            scores.push({
+                score: score,
+                total: course.quiz.length,
+                percentage: percentage,
+                date: new Date().toISOString(),
+                results: results
+            });
+            localStorage.setItem(`course_${course.id}_scores`, JSON.stringify(scores));
+            
+            // Clear session storage
+            sessionStorage.removeItem(`quiz_${course.id}_answers`);
+            
+            // Display results
+            displayQuizResults(course, score, percentage, results);
+            
+            // Refresh page data
+            setTimeout(() => {
+                loadCourseDetails();
+            }, 100);
+        }
+        
+        // Display quiz results
+        function displayQuizResults(course, score, percentage, results) {
+            const resultContainer = document.getElementById('quizResult');
+            
+            let performanceClass = '';
+            let performanceMessage = '';
+            let emoji = '';
+            
+            if (percentage >= 80) {
+                performanceClass = 'badge-excellent';
+                performanceMessage = 'Excellent! Outstanding performance!';
+                emoji = '🎉';
+            } else if (percentage >= 60) {
+                performanceClass = 'badge-good';
+                performanceMessage = 'Good job! Keep up the great work!';
+                emoji = '👍';
+            } else if (percentage >= 40) {
+                performanceClass = 'badge-average';
+                performanceMessage = 'Good effort! Review and try again!';
+                emoji = '📚';
+            } else {
+                performanceClass = 'badge-needs-work';
+                performanceMessage = 'Keep practicing! You\'ll get better!';
+                emoji = '💪';
+            }
+            
+            resultContainer.innerHTML = `
+                <div class="score-card-result">
+                    <div class="score-circle">
+                        <div class="score-number">${Math.round(percentage)}%</div>
+                    </div>
+                    <h3 class="mb-2">${score} / ${course.quiz.length}</h3>
+                    <div class="performance-message">
+                        ${emoji} ${performanceMessage}
+                    </div>
+                    <div class="mt-3">
+                        <span class="badge ${performanceClass} px-3 py-2">
+                            ${percentage >= 80 ? '🏆 Mastery' : percentage >= 60 ? '✅ Proficient' : percentage >= 40 ? '📖 Learning' : '🎯 Beginner'}
+                        </span>
+                    </div>
+                    <button class="btn btn-light mt-4" onclick="reviewAnswers(${course.id})">
+                        <i class="bi bi-eye"></i> Review Answers
+                    </button>
+                </div>
+            `;
+            
+            // Scroll to results
+            resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Review answers
+        window.reviewAnswers = function(courseId) {
+            const courses = JSON.parse(localStorage.getItem('lms_courses')) || [];
+            const course = courses.find(c => c.id === courseId);
+            const scores = JSON.parse(localStorage.getItem(`course_${course.id}_scores`)) || [];
+            const lastAttempt = scores[scores.length - 1];
+            
+            if (!lastAttempt || !lastAttempt.results) return;
+            
+            let reviewHtml = `
+                <div class="modal fade" id="reviewModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content rounded-4">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">
+                                    <i class="bi bi-journal-check"></i> Answer Review
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3 text-center">
+                                    <h4>Score: ${lastAttempt.score}/${lastAttempt.total} (${lastAttempt.percentage.toFixed(1)}%)</h4>
+                                    <div class="progress-custom mt-2">
+                                        <div class="progress-bar" style="width: ${lastAttempt.percentage}%"></div>
+                                    </div>
+                                </div>
+                                ${lastAttempt.results.map((result, idx) => `
+                                    <div class="quiz-question-card mb-3 ${result.isCorrect ? 'border-success' : 'border-danger'}">
+                                        <div class="mb-2">
+                                            <strong>Q${idx + 1}: ${escapeHtml(result.question)}</strong>
+                                        </div>
+                                        <div class="ms-3">
+                                            <div class="${result.isCorrect ? 'text-success' : 'text-danger'}">
+                                                <i class="bi ${result.isCorrect ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}"></i>
+                                                Your answer: ${result.selected !== undefined ? escapeHtml(course.quiz[idx].options[result.selected]) : 'Not answered'}
+                                            </div>
+                                            ${!result.isCorrect ? `
+                                                <div class="text-success mt-1">
+                                                    <i class="bi bi-check-circle"></i>
+                                                    Correct answer: ${escapeHtml(result.correctAnswer)}
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button class="btn btn-primary" onclick="retakeQuiz(${course.id})">Retake Quiz</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if present
+            const existingModal = document.getElementById('reviewModal');
+            if (existingModal) existingModal.remove();
+            
+            document.body.insertAdjacentHTML('beforeend', reviewHtml);
+            const modal = new bootstrap.Modal(document.getElementById('reviewModal'));
+            modal.show();
+        };
+        
+        // Retake quiz
+        window.retakeQuiz = function(courseId) {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('reviewModal'));
+            if (modal) modal.hide();
+            
+            // Clear session storage
+            sessionStorage.removeItem(`quiz_${courseId}_answers`);
+            
+            // Reload course
+            loadCourseDetails();
+        };
+        
+        // Render attempts history
+        function renderAttemptsHistory(scores) {
+            const attemptsList = document.getElementById('attemptsList');
+            const sortedScores = [...scores].reverse();
+            
+            attemptsList.innerHTML = sortedScores.map((attempt, idx) => {
+                let badgeClass = '';
+                if (attempt.percentage >= 80) badgeClass = 'badge-excellent';
+                else if (attempt.percentage >= 60) badgeClass = 'badge-good';
+                else if (attempt.percentage >= 40) badgeClass = 'badge-average';
+                else badgeClass = 'badge-needs-work';
+                
+                return `
+                    <div class="attempt-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Attempt #${scores.length - idx}</strong>
+                            <div class="small text-muted">${new Date(attempt.date).toLocaleString()}</div>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge-score ${badgeClass}">
+                                ${attempt.score}/${attempt.total} (${attempt.percentage.toFixed(1)}%)
+                            </span>
+                            <button class="btn btn-sm btn-outline-primary ms-2" onclick="viewAttemptDetails(${JSON.stringify(attempt).replace(/"/g, '&quot;')})">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // View attempt details
+        window.viewAttemptDetails = function(attempt) {
+            alert(`Quiz Attempt Details:\n\nScore: ${attempt.score}/${attempt.total}\nPercentage: ${attempt.percentage.toFixed(1)}%\nDate: ${new Date(attempt.date).toLocaleString()}`);
+        };
+        
+        // Share functions
+        window.copyCourseLink = function() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                showNotification('Course link copied to clipboard!', 'success');
+            });
+        };
+        
+        window.shareOnWhatsApp = function() {
+            const url = window.location.href;
+            const text = encodeURIComponent(`Check out this course on SmartLMS!`);
+            window.open(`https://wa.me/?text=${text} ${url}`, '_blank');
+        };
+        
+        window.shareOnTwitter = function() {
+            const url = window.location.href;
+            const text = encodeURIComponent(`Check out this awesome course on SmartLMS!`);
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+        };
+        
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 80px; right: 20px; z-index: 9999; min-width: 250px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        // Escape HTML helper
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        // Initialize page
+        loadCourseDetails();
+    </script>
+</body>
+</html>
