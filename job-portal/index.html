@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Panel | JobHub</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg glass-nav">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="bi bi-briefcase-fill me-2"></i>JobHub
+            </a>
+            <div class="ms-auto">
+                <a href="jobs.html" class="btn btn-outline-light me-2">Browse Jobs</a>
+                <a href="candidates.html" class="btn btn-outline-light">Candidates</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card-glass p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-person-workspace fs-1 text-primary"></i>
+                        <h2 class="fw-bold mt-2">Recruiter Panel</h2>
+                        <p class="text-muted">Post new job opportunities and manage your listings</p>
+                    </div>
+
+                    <form id="jobForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Job Title *</label>
+                            <input type="text" id="title" class="form-control form-control-lg" placeholder="e.g., Senior Frontend Developer" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Company Name *</label>
+                            <input type="text" id="company" class="form-control form-control-lg" placeholder="e.g., TechCorp Inc." required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Location *</label>
+                            <input type="text" id="location" class="form-control form-control-lg" placeholder="e.g., Remote / New York, NY" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Job Description *</label>
+                            <textarea id="description" rows="5" class="form-control" placeholder="Describe the role, requirements, benefits..." required></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Salary Range (Optional)</label>
+                            <input type="text" id="salary" class="form-control" placeholder="e.g., $80,000 - $100,000">
+                        </div>
+
+                        <button type="submit" class="btn-gradient w-100 py-3">
+                            <i class="bi bi-plus-circle me-2"></i>Post Job
+                        </button>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-database me-2"></i>
+                            <strong>Total Jobs Posted:</strong> 
+                            <span id="jobCount" class="badge bg-primary ms-2">0</span>
+                        </div>
+                        <button id="clearAllJobsBtn" class="btn btn-outline-danger">
+                            <i class="bi bi-trash"></i> Clear All Jobs
+                        </button>
+                    </div>
+
+                    <div class="alert alert-info mt-3 small">
+                        <i class="bi bi-info-circle"></i> Jobs are stored locally in your browser. Data persists until cleared.
+                    </div>
+                </div>
+
+                <!-- Recent Jobs Preview -->
+                <div class="card-glass mt-4 p-4">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-clock-history"></i> Recently Posted Jobs</h5>
+                    <div id="recentJobsList" class="recent-jobs-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
